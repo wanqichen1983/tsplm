@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TENSURE TS-PLM — 让产品研发更高效</title>
+    <meta name="description" content="专为中小型制造企业设计的产品生命周期管理系统，文档/BOM/变更，全流程在线协同。已服务100+制造企业。">
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        /* ========== Reset & Base ========== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --blue: #1456F0;
+            --blue-dark: #0D3FBF;
+            --blue-light: #E8EEFF;
+            --orange: #FF6D2E;
+            --orange-hover: #E55A1B;
+            --gray-900: #1A1A2E;
+            --gray-700: #374151;
+            --gray-500: #6B7280;
+            --gray-300: #D1D5DB;
+            --gray-100: #F3F4F6;
+            --white: #FFFFFF;
+            --radius: 12px;
+            --shadow: 0 4px 24px rgba(20,86,240,0.08);
+            --shadow-lg: 0 8px 40px rgba(20,86,240,0.12);
+        }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            color: var(--gray-700);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; }
+
+        /* ========== Utility ========== */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .section-title {
+            font-size: 36px; font-weight: 700; color: var(--gray-900);
+            text-align: center; margin-bottom: 16px; letter-spacing: -0.5px;
+        }
+        .section-subtitle {
+            font-size: 18px; color: var(--gray-500); text-align: center;
+            margin-bottom: 64px; max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 600;
+            cursor: pointer; border: none; transition: all 0.3s ease;
+        }
+        .btn-primary { background: var(--orange); color: var(--white); }
+        .btn-primary:hover { background: var(--orange-hover); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,109,46,0.3); }
+        .btn-outline { background: var(--white); color: var(--blue); border: 2px solid var(--blue); }
+        .btn-outline:hover { background: var(--blue-light); transform: translateY(-2px); }
+
+        /* ========== Navbar ========== */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: box-shadow 0.3s ease;
+        }
+        .navbar.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+        .navbar-inner {
+            display: flex; align-items: center; justify-content: space-between;
+            height: 64px; max-width: 1200px; margin: 0 auto; padding: 0 24px;
+        }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; color: var(--blue); }
+        .logo svg { width: 36px; height: 36px; }
+        .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+        .nav-links a { font-size: 15px; color: var(--gray-700); font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--blue); }
+        .nav-cta { padding: 8px 20px !important; font-size: 14px !important; }
+        .mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+        .mobile-toggle svg { width: 24px; height: 24px; color: var(--gray-700); }
+
+        /* ========== Hero ========== */
+        .hero {
+            padding: 140px 0 100px;
+            background: linear-gradient(135deg, #F0F4FF 0%, #FFFFFF 50%, #FFF7F0 100%);
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -200px; right: -200px;
+            width: 600px; height: 600px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(20,86,240,0.06) 0%, transparent 70%);
+        }
+        .hero-inner { display: flex; align-items: center; gap: 60px; }
+        .hero-text { flex: 1; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 500;
+            background: var(--blue-light); color: var(--blue); margin-bottom: 24px;
+        }
+        .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+        .hero h1 {
+            font-size: 52px; font-weight: 800; color: var(--gray-900);
+            line-height: 1.2; margin-bottom: 20px; letter-spacing: -1px;
+        }
+        .hero h1 span { color: var(--blue); }
+        .hero-desc { font-size: 18px; color: var(--gray-500); margin-bottom: 36px; line-height: 1.8; }
+        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+        .hero-stats { display: flex; gap: 48px; margin-top: 48px; }
+        .hero-stat .num { font-size: 36px; font-weight: 800; color: var(--blue); }
+        .hero-stat .num span { font-size: 20px; font-weight: 600; }
+        .hero-stat .label { font-size: 14px; color: var(--gray-500); margin-top: 4px; }
+        .hero-visual { flex: 1; position: relative; }
+        .hero-visual .mockup {
+            width: 100%; border-radius: var(--radius); overflow: hidden;
+            box-shadow: var(--shadow-lg); border: 1px solid rgba(0,0,0,0.06);
+            background: var(--white);
+        }
+        .mockup-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--gray-100); border-bottom: 1px solid var(--gray-300); }
+        .mockup-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .mockup-dot.red { background: #FF5F57; }
+        .mockup-dot.yellow { background: #FEBC2E; }
+        .mockup-dot.green { background: #28C840; }
+        .mockup-body { padding: 20px; min-height: 340px; }
+        .mockup-sidebar { display: flex; gap: 12px; margin-bottom: 20px; }
+        .mockup-sidebar-item {
+            padding: 8px 16px; border-radius: 6px; font-size: 13px;
+            background: var(--blue-light); color: var(--blue); font-weight: 500;
+        }
+        .mockup-sidebar-item.active { background: var(--blue); color: var(--white); }
+        .mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .mockup-card {
+            padding: 16px; border-radius: 8px; background: var(--gray-100);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .mockup-card-icon {
+            width: 36px; height: 36px; border-radius: 8px; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; color: var(--white);
+        }
+        .mockup-card h4 { font-size: 13px; font-weight: 600; color: var(--gray-900); margin-bottom: 4px; }
+        .mockup-card p { font-size: 11px; color: var(--gray-500); }
+
+        /* ========== Pain Points ========== */
+        .pain-points { padding: 100px 0; background: var(--white); }
+        .pain-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        .pain-card {
+            padding: 32px 24px; border-radius: var(--radius);
+            background: var(--gray-100); border: 1px solid rgba(0,0,0,0.04);
+            transition: all 0.3s ease; text-align: center;
+        }
+        .pain-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--blue-light); }
+        .pain-icon {
+            width: 56px; height: 56px; border-radius: 14px; margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; background: #FFF0E8;
+        }
+        .pain-card h3 { font-size: 16px; font-weight: 600; color: var(--gray-900); margin-bottom: 10px; }
+        .pain-card p { font-size: 14px; color: var(--gray-500); line-height: 1.7; }
+
+        /* ========== Core Features ========== */
+        .features { padding: 100px 0; background: var(--gray-100); }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .feature-card {
+            padding: 36px 28px; border-radius: var(--radius);
+            background: var(--white); border: 1px solid rgba(0,0,0,0.04);
+            transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .feature-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--blue); transform: scaleX(0); transition: transform 0.3s ease;
+            transform-origin: left;
+        }
+        .feature-card:hover::before { transform: scaleX(1); }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+        .feature-icon {
+            width: 48px; height: 48px; border-radius: 12px; margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; color: var(--white); background: var(--blue);
+        }
+        .feature-card:nth-child(2) .feature-icon { background: #10B981; }
+        .feature-card:nth-child(3) .feature-icon { background: #F59E0B; }
+        .feature-card:nth-child(4) .feature-icon { background: #8B5CF6; }
+        .feature-card:nth-child(5) .feature-icon { background: #EC4899; }
+        .feature-card:nth-child(6) .feature-icon { background: #06B6D4; }
+        .feature-card h3 { font-size: 18px; font-weight: 600; color: var(--gray-900); margin-bottom: 10px; }
+        .feature-card p { font-size: 14px; color: var(--gray-500); line-height: 1.8; }
+        .feature-tag {
+            display: inline-block; padding: 3px 10px; border-radius: 4px;
+            font-size: 12px; color: var(--blue); background: var(--blue-light);
+            margin-top: 14px; font-weight: 500;
+        }
+
+        /* ========== Platform ========== */
+        .platform { padding: 100px 0; background: var(--white); }
+        .platform-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+        .platform-card {
+            padding: 40px 32px; border-radius: 16px; text-align: center;
+            border: 2px solid var(--gray-100); transition: all 0.3s ease;
+            position: relative;
+        }
+        .platform-card:hover { border-color: var(--blue); box-shadow: var(--shadow-lg); }
+        .platform-card.featured {
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+            color: var(--white); border-color: transparent;
+        }
+        .platform-card.featured h3,
+        .platform-card.featured p,
+        .platform-card.featured .platform-users { color: var(--white); }
+        .platform-card.featured .platform-tag { background: rgba(255,255,255,0.2); color: var(--white); }
+        .platform-icon { font-size: 48px; margin-bottom: 20px; }
+        .platform-card h3 { font-size: 22px; font-weight: 700; color: var(--gray-900); margin-bottom: 10px; }
+        .platform-card p { font-size: 14px; color: var(--gray-500); margin-bottom: 20px; line-height: 1.8; }
+        .platform-tag {
+            display: inline-block; padding: 4px 12px; border-radius: 4px;
+            font-size: 12px; font-weight: 600; background: var(--blue-light); color: var(--blue);
+        }
+        .platform-users { font-size: 13px; color: var(--gray-500); margin-top: 16px; }
+
+        /* ========== Highlights ========== */
+        .highlights {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--gray-900) 0%, #1E293B 100%);
+            color: var(--white);
+        }
+        .highlights .section-title { color: var(--white); }
+        .highlights .section-subtitle { color: rgba(255,255,255,0.6); }
+        .highlights-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+        .highlight-item { text-align: center; }
+        .highlight-num {
+            font-size: 56px; font-weight: 800;
+            background: linear-gradient(135deg, #60A5FA, #A78BFA);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 8px;
+        }
+        .highlight-num span { font-size: 28px; }
+        .highlight-label { font-size: 15px; color: rgba(255,255,255,0.7); }
+
+        /* ========== Scenarios ========== */
+        .scenarios { padding: 100px 0; background: var(--white); }
+        .scenarios-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        .scenario-card { padding: 32px 24px; border-radius: var(--radius); border: 1px solid var(--gray-100); transition: all 0.3s ease; }
+        .scenario-card:hover { border-color: var(--blue); box-shadow: var(--shadow); }
+        .scenario-avatar {
+            width: 48px; height: 48px; border-radius: 50%; margin-bottom: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+        }
+        .scenario-card h3 { font-size: 16px; font-weight: 600; color: var(--gray-900); margin-bottom: 8px; }
+        .scenario-card .role { font-size: 13px; color: var(--blue); font-weight: 500; margin-bottom: 12px; }
+        .scenario-card ul { list-style: none; padding: 0; }
+        .scenario-card li { font-size: 14px; color: var(--gray-500); padding: 4px 0; padding-left: 16px; position: relative; }
+        .scenario-card li::before { content: ''; position: absolute; left: 0; top: 12px; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+
+        /* ========== Industries ========== */
+        .industries { padding: 100px 0; background: var(--gray-100); }
+        .industry-tags { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+        .industry-tag {
+            padding: 14px 28px; border-radius: 40px; font-size: 16px; font-weight: 600;
+            background: var(--white); color: var(--gray-700);
+            border: 1px solid var(--gray-300); transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
+        }
+        .industry-tag:hover { border-color: var(--blue); color: var(--blue); transform: translateY(-2px); box-shadow: var(--shadow); background: var(--blue-light); }
+        .industry-tag .arrow { font-size: 14px; opacity: 0; transition: opacity 0.3s; margin-left: 4px; }
+        .industry-tag:hover .arrow { opacity: 1; }
+
+        /* ========== CTA ========== */
+        .cta {
+            padding: 100px 0; background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+            text-align: center; color: var(--white);
+        }
+        .cta h2 { font-size: 40px; font-weight: 700; margin-bottom: 16px; }
+        .cta p { font-size: 18px; color: rgba(255,255,255,0.8); margin-bottom: 40px; }
+        .cta .btn { padding: 16px 48px; font-size: 18px; }
+        .cta .btn-primary { background: var(--orange); }
+        .cta .btn-outline { background: transparent; border-color: rgba(255,255,255,0.4); color: var(--white); }
+        .cta .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: var(--white); }
+
+        /* ========== Trial Form ========== */
+        .trial { padding: 100px 0; background: var(--gray-100); }
+        .trial-wrapper {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+        }
+        .trial-info h2 { font-size: 36px; font-weight: 700; color: var(--gray-900); margin-bottom: 16px; line-height: 1.3; }
+        .trial-info p { font-size: 16px; color: var(--gray-500); margin-bottom: 32px; line-height: 1.8; }
+        .trial-perks { list-style: none; padding: 0; }
+        .trial-perks li {
+            display: flex; align-items: flex-start; gap: 12px; padding: 10px 0;
+            font-size: 15px; color: var(--gray-700);
+        }
+        .trial-perks li .check {
+            flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+            background: var(--blue-light); color: var(--blue);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; margin-top: 2px;
+        }
+        .trial-form-card {
+            background: var(--white); border-radius: 16px; padding: 40px;
+            box-shadow: var(--shadow-lg); border: 1px solid rgba(0,0,0,0.04);
+        }
+        .trial-form-card h3 { font-size: 22px; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+        .trial-form-card .form-desc { font-size: 14px; color: var(--gray-500); margin-bottom: 28px; }
+        .form-group { margin-bottom: 18px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group label {
+            display: block; font-size: 14px; font-weight: 600; color: var(--gray-700);
+            margin-bottom: 6px;
+        }
+        .form-group label .required { color: #EF4444; margin-left: 2px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 11px 14px; border-radius: 8px; font-size: 14px;
+            border: 1.5px solid var(--gray-300); background: var(--white); color: var(--gray-700);
+            transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--blue); box-shadow: 0 0 0 3px rgba(20,86,240,0.1);
+        }
+        .form-group input::placeholder, .form-group textarea::placeholder { color: var(--gray-300); }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-submit {
+            width: 100%; padding: 13px; border: none; border-radius: 8px;
+            font-size: 16px; font-weight: 600; color: var(--white);
+            background: var(--orange); cursor: pointer; transition: all 0.3s;
+            margin-top: 6px;
+        }
+        .form-submit:hover { background: var(--orange-hover); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,109,46,0.3); }
+        .form-note { font-size: 12px; color: var(--gray-500); text-align: center; margin-top: 14px; line-height: 1.6; }
+        .form-toast {
+            display: none; position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+            padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 600;
+            color: var(--white); z-index: 9999; box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            animation: toastIn 0.4s ease;
+        }
+        .form-toast.success { background: #10B981; }
+        .form-toast.error { background: #EF4444; }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @media (max-width: 1024px) {
+            .trial-wrapper { grid-template-columns: 1fr; gap: 40px; }
+        }
+        @media (max-width: 768px) {
+            .trial-form-card { padding: 28px 20px; }
+            .form-row { grid-template-columns: 1fr; }
+            .trial-info h2 { font-size: 28px; }
+        }
+
+        /* ========== Learning ========== */
+        .learning { padding: 100px 0; background: var(--white); }
+        .learning-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+        .learning-card {
+            border-radius: var(--radius); overflow: hidden;
+            border: 1px solid var(--gray-100); transition: all 0.3s ease;
+            background: var(--white);
+        }
+        .learning-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: transparent; }
+        .learning-thumb {
+            width: 100%; height: 160px; display: flex; align-items: center; justify-content: center;
+            font-size: 52px; position: relative; overflow: hidden;
+        }
+        .learning-thumb .cat-tag {
+            position: absolute; top: 12px; left: 12px; padding: 3px 10px;
+            border-radius: 4px; font-size: 12px; font-weight: 600; color: var(--white);
+        }
+        .learning-body { padding: 20px 22px 24px; }
+        .learning-body h3 { font-size: 16px; font-weight: 600; color: var(--gray-900); margin-bottom: 8px; line-height: 1.5; }
+        .learning-body p { font-size: 13px; color: var(--gray-500); line-height: 1.7; margin-bottom: 16px; }
+        .learning-meta { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--gray-500); }
+        .learning-meta .tag { padding: 2px 8px; border-radius: 3px; background: var(--blue-light); color: var(--blue); font-weight: 500; }
+        .learning-more { text-align: center; margin-top: 48px; }
+        @media (max-width: 1024px) { .learning-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .learning-grid { grid-template-columns: 1fr; } }
+
+        /* ========== Footer ========== */
+        .footer { padding: 60px 0 30px; background: var(--gray-900); color: rgba(255,255,255,0.6); }
+        .footer-inner { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
+        .footer-brand { max-width: 320px; }
+        .footer-brand .logo { color: var(--white); margin-bottom: 12px; }
+        .footer-brand p { font-size: 14px; line-height: 1.7; }
+        .footer-links { display: flex; gap: 48px; }
+        .footer-col h4 { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 16px; }
+        .footer-col a { display: block; font-size: 13px; color: rgba(255,255,255,0.5); padding: 4px 0; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--white); }
+        .footer-bottom { text-align: center; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px; }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 1024px) {
+            .hero h1 { font-size: 40px; }
+            .hero-inner { flex-direction: column; }
+            .hero-visual { max-width: 600px; margin: 0 auto; }
+            .pain-grid, .highlights-grid, .scenarios-grid { grid-template-columns: repeat(2, 1fr); }
+            .features-grid, .platform-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-toggle { display: block; }
+            .nav-links.open {
+                display: flex; flex-direction: column; position: absolute;
+                top: 64px; left: 0; right: 0; background: var(--white);
+                padding: 24px; gap: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+                border-bottom: 1px solid var(--gray-300);
+            }
+            .hero { padding: 120px 0 60px; }
+            .hero h1 { font-size: 32px; }
+            .hero-desc { font-size: 16px; }
+            .hero-stats { flex-direction: column; gap: 24px; }
+            .section-title { font-size: 28px; }
+            .section-subtitle { font-size: 16px; margin-bottom: 40px; }
+            .pain-grid, .features-grid, .platform-grid, .highlights-grid, .scenarios-grid { grid-template-columns: 1fr; }
+            .footer-inner { flex-direction: column; gap: 32px; }
+            .footer-links { flex-direction: column; gap: 24px; }
+            .cta h2 { font-size: 28px; }
+            .mockup-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== Navbar ========== -->
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="#" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 64" width="45" height="32" style="flex-shrink:0;">
+                <rect x="4" y="4" width="38" height="12" rx="3" fill="url(#gG)"/>
+                <rect x="12" y="4" width="14" height="46" rx="3" fill="url(#gG)"/>
+                <rect x="30" y="4" width="38" height="12" rx="3" fill="url(#bG)"/>
+                <rect x="56" y="4" width="14" height="34" rx="3" fill="url(#bG)"/>
+                <rect x="56" y="44" width="14" height="6" rx="2.5" fill="url(#bG)"/>
+                <defs>
+                    <linearGradient id="gG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2DE89F"/><stop offset="100%" stop-color="#10C87A"/></linearGradient>
+                    <linearGradient id="bG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4B9CF5"/><stop offset="100%" stop-color="#1456F0"/></linearGradient>
+                </defs>
+            </svg>
+            <span>Tensure TS-PLM</span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#features">核心功能</a></li>
+            <li><a href="#platform">三端协同</a></li>
+            <li><a href="#scenarios">应用场景</a></li>
+            <li><a href="#industries">行业方案</a></li>
+            <li><a href="#learning">学习课堂</a></li>
+            <li><a href="#trial" class="btn btn-primary nav-cta">申请试用</a></li>
+        </ul>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="菜单">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
+    </div>
+</nav>
+
+<!-- ========== Hero ========== -->
+<section class="hero" id="hero">
+    <div class="container">
+        <div class="hero-inner">
+            <div class="hero-text" data-aos="fade-right">
+                <div class="hero-badge"><span class="dot"></span> 已服务 100+ 制造企业</div>
+                <h1>让产品研发<br><span>更高效</span></h1>
+                <p class="hero-desc">专为中小型制造企业设计的产品生命周期管理系统。<br>文档管理 · BOM管理 · 变更管理 · 流程审批 · ERP对接，<br>一个平台覆盖产品全生命周期。</p>
+                <div class="hero-buttons">
+                    <a href="#trial" class="btn btn-primary">预约演示</a>
+                    <a href="#features" class="btn btn-outline">了解功能</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat"><div class="num">100<span>+</span></div><div class="label">服务企业</div></div>
+                    <div class="hero-stat"><div class="num">5<span>大</span></div><div class="label">行业覆盖</div></div>
+                    <div class="hero-stat"><div class="num">CS+BS+APP</div><div class="label">三端协同</div></div>
+                </div>
+            </div>
+            <div class="hero-visual" data-aos="fade-left">
+                <div class="mockup">
+                    <div class="mockup-bar">
+                        <span class="mockup-dot red"></span>
+                        <span class="mockup-dot yellow"></span>
+                        <span class="mockup-dot green"></span>
+                    </div>
+                    <div class="mockup-body">
+                        <div class="mockup-sidebar">
+                            <span class="mockup-sidebar-item active">首页</span>
+                            <span class="mockup-sidebar-item">文档管理</span>
+                            <span class="mockup-sidebar-item">产品管理</span>
+                            <span class="mockup-sidebar-item">变更管理</span>
+                        </div>
+                        <div class="mockup-grid">
+                            <div class="mockup-card">
+                                <div class="mockup-card-icon" style="background:var(--blue);">📄</div>
+                                <h4>文档管理</h4>
+                                <p>图纸版本自动归档</p>
+                            </div>
+                            <div class="mockup-card">
+                                <div class="mockup-card-icon" style="background:#10B981;">📋</div>
+                                <h4>BOM管理</h4>
+                                <p>多级BOM在线维护</p>
+                            </div>
+                            <div class="mockup-card">
+                                <div class="mockup-card-icon" style="background:#F59E0B;">🔄</div>
+                                <h4>变更管理</h4>
+                                <p>完整EC流程闭环</p>
+                            </div>
+                            <div class="mockup-card">
+                                <div class="mockup-card-icon" style="background:#8B5CF6;">✅</div>
+                                <h4>流程审批</h4>
+                                <p>自定义审批模板</p>
+                            </div>
+                            <div class="mockup-card">
+                                <div class="mockup-card-icon" style="background:#EC4899;">🔗</div>
+                                <h4>ERP对接</h4>
+                                <p>天心ERP实时同步</p>
+                            </div>
+                            <div class="mockup-card">
+                                <div class="mockup-card-icon" style="background:#06B6D4;">📐</div>
+                                <h4>CAD插件</h4>
+                                <p>SolidWorks/CREO集成</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== Pain Points ========== -->
+<section class="pain-points" id="pain">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">这些问题，您是否也在面对？</h2>
+        <p class="section-subtitle" data-aos="fade-up">传统方式管理产品数据，正在拖慢您的研发节奏</p>
+        <div class="pain-grid">
+            <div class="pain-card" data-aos="fade-up" data-aos-delay="0">
+                <div class="pain-icon">📂</div>
+                <h3>图纸文件散落各处</h3>
+                <p>用文件夹+Excel管理图纸和BOM，文件散落在个人电脑、共享盘、邮箱各处，找一份图纸要翻半天</p>
+            </div>
+            <div class="pain-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="pain-icon">🔍</div>
+                <h3>版本混乱难追溯</h3>
+                <p>图纸版本命名随意（V1、V2、最终版、最终最终版），分不清哪个是最新版，历史版本无法追溯</p>
+            </div>
+            <div class="pain-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="pain-icon">📧</div>
+                <h3>变更通知靠口头</h3>
+                <p>工程变更通过邮件、微信、电话层层传达，遗漏和延误频发，生产线用错图纸造成返工</p>
+            </div>
+            <div class="pain-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="pain-icon">🔗</div>
+                <h3>系统数据不互通</h3>
+                <p>PLM与ERP之间靠手工导数据，物料、BOM、变更信息不同步，容易出错且效率低下</p>
+            </div>
+            <div class="pain-card" data-aos="fade-up" data-aos-delay="0">
+                <div class="pain-icon">📋</div>
+                <h3>BOM维护效率低</h3>
+                <p>Excel维护BOM，多级展开困难，变更时全表修改，容易遗漏子件，无法自动校验</p>
+            </div>
+            <div class="pain-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="pain-icon">⏱️</div>
+                <h3>审批流程周期长</h3>
+                <p>纸质单据或邮件审批，签字人不在就卡住，流程进度不透明，紧急变更等不及</p>
+            </div>
+            <div class="pain-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="pain-icon">👥</div>
+                <h3>权限管控粗放</h3>
+                <p>所有人都能看到所有图纸，机密设计资料缺乏保护，离职员工带走核心数据风险高</p>
+            </div>
+            <div class="pain-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="pain-icon">📊</div>
+                <h3>数据孤岛难分析</h3>
+                <p>产品数据分散在各个系统和个人手中，无法形成统一视图，管理层决策缺乏数据支撑</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== Core Features ========== -->
+<section class="features" id="features">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">一个平台，覆盖产品全生命周期</h2>
+        <p class="section-subtitle" data-aos="fade-up">从图纸设计到生产制造，TS-PLM让每个环节都清晰可控</p>
+        <div class="features-grid">
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="0">
+                <div class="feature-icon">📄</div>
+                <h3>文档管理</h3>
+                <p>统一管理产品图纸、技术文档和规范文件。支持检入/检出机制、版本追溯、在线预览，自动关联物料与BOM。</p>
+                <span class="feature-tag">版本追溯 · 在线预览</span>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon">📋</div>
+                <h3>BOM管理</h3>
+                <p>支持多级BOM展开、版本对比和替代料管理。BOM表头与表身分离设计，变更不影响现有生产，支持一键同步ERP。</p>
+                <span class="feature-tag">多级展开 · ERP同步</span>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon">🔄</div>
+                <h3>变更管理</h3>
+                <p>完整的EC流程：变更申请→审批→执行→验证→关闭。支持货品属性、BOM、图纸等多类型变更，变更影响自动分析。</p>
+                <span class="feature-tag">EC闭环 · 影响分析</span>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="0">
+                <div class="feature-icon">✅</div>
+                <h3>流程审批</h3>
+                <p>可视化流程模板设计器，支持串行、并行、条件分支等多种审批模式。消息自动推送，进度实时追踪。</p>
+                <span class="feature-tag">可视化设计 · 自动推送</span>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon">🔗</div>
+                <h3>系统集成</h3>
+                <p>与天心ERP深度对接，实现物料、BOM、变更数据的双向实时同步。同时支持CREO、SolidWorks CAD插件。</p>
+                <span class="feature-tag">天心ERP · CAD集成</span>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon">📊</div>
+                <h3>表单与权限</h3>
+                <p>可视化拖拽设计业务表单，自定义产品、文档等属性模板。细粒度权限控制，按角色、部门灵活管理数据可见性。</p>
+                <span class="feature-tag">自定义表单 · 精细权限</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== Platform (CS/BS/APP) ========== -->
+<section class="platform" id="platform">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">CS + BS + APP，三端协同</h2>
+        <p class="section-subtitle" data-aos="fade-up">新架构 · 新模式 · 新应用，满足不同岗位的使用需求</p>
+        <div class="platform-grid">
+            <div class="platform-card" data-aos="fade-up" data-aos-delay="0">
+                <div class="platform-icon">🖥️</div>
+                <h3>CS 客户端</h3>
+                <p>高性能本地渲染，与CAD设计软件深度集成。适合研发工程师日常使用，操作流畅高效。</p>
+                <span class="platform-tag">高性能渲染</span>
+                <div class="platform-users">研发工程师 · 工艺人员</div>
+            </div>
+            <div class="platform-card featured" data-aos="fade-up" data-aos-delay="100">
+                <div class="platform-icon">🌐</div>
+                <h3>BS 浏览器端</h3>
+                <p>无需安装任何软件，打开浏览器即可使用。支持外网远程访问，方便管理和审核人员随时办公。</p>
+                <span class="platform-tag">免安装 · 远程办公</span>
+                <div class="platform-users">管理人员 · 审核人员</div>
+            </div>
+            <div class="platform-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="platform-icon">📱</div>
+                <h3>APP 移动端</h3>
+                <p>消息实时推送，审批一键处理。专为领导决策层设计，随时随地掌握项目进度。</p>
+                <span class="platform-tag">消息推送 · 移动审批</span>
+                <div class="platform-users">管理层 · 决策者</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== Highlights (Numbers) ========== -->
+<section class="highlights" id="data">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">用数据说话</h2>
+        <p class="section-subtitle" data-aos="fade-up">TS-PLM帮助制造企业实现数字化转型</p>
+        <div class="highlights-grid">
+            <div class="highlight-item" data-aos="fade-up" data-aos-delay="0">
+                <div class="highlight-num">100<span>+</span></div>
+                <div class="highlight-label">服务制造企业</div>
+            </div>
+            <div class="highlight-item" data-aos="fade-up" data-aos-delay="100">
+                <div class="highlight-num">5<span>大</span></div>
+                <div class="highlight-label">行业深度覆盖</div>
+            </div>
+            <div class="highlight-item" data-aos="fade-up" data-aos-delay="200">
+                <div class="highlight-num">3<span>端</span></div>
+                <div class="highlight-label">全场景覆盖</div>
+            </div>
+            <div class="highlight-item" data-aos="fade-up" data-aos-delay="300">
+                <div class="highlight-num">EC<span>闭环</span></div>
+                <div class="highlight-label">变更全程可追溯</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== Scenarios ========== -->
+<section class="scenarios" id="scenarios">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">不同角色，不同价值</h2>
+        <p class="section-subtitle" data-aos="fade-up">TS-PLM为每个岗位量身打造，让每个人都能高效工作</p>
+        <div class="scenarios-grid">
+            <div class="scenario-card" data-aos="fade-up" data-aos-delay="0">
+                <div class="scenario-avatar">👨‍🔧</div>
+                <h3>研发工程师</h3>
+                <div class="role">设计部门</div>
+                <ul>
+                    <li>SolidWorks/CREO一键归档</li>
+                    <li>图纸版本自动管理</li>
+                    <li>BOM在线创建与维护</li>
+                </ul>
+            </div>
+            <div class="scenario-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="scenario-avatar">👨‍💻</div>
+                <h3>工艺工程师</h3>
+                <div class="role">工艺部门</div>
+                <ul>
+                    <li>快速查找最新版图纸</li>
+                    <li>BOM多级展开查看</li>
+                    <li>替代料方案管理</li>
+                </ul>
+            </div>
+            <div class="scenario-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="scenario-avatar">📁</div>
+                <h3>文控专员</h3>
+                <div class="role">文档管理部门</div>
+                <ul>
+                    <li>文档检入检出管控</li>
+                    <li>版本历史完整追溯</li>
+                    <li>发布审批流程管理</li>
+                </ul>
+            </div>
+            <div class="scenario-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="scenario-avatar">👔</div>
+                <h3>管理层</h3>
+                <div class="role">企业决策层</div>
+                <ul>
+                    <li>变更进度实时监控</li>
+                    <li>移动端审批消息推送</li>
+                    <li>项目数据全局概览</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== Industries ========== -->
+<section class="industries" id="industries">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">深耕行业，理解您的业务</h2>
+        <p class="section-subtitle" data-aos="fade-up">覆盖制造业多个细分领域，点击查看行业案例</p>
+        <div class="industry-tags" data-aos="fade-up">
+            <a href="case-auto.html" class="industry-tag">🚗 汽车 <span class="arrow">→</span></a>
+            <a href="case-electronics.html" class="industry-tag">🔌 电子 <span class="arrow">→</span></a>
+            <a href="case-machinery.html" class="industry-tag">⚙️ 机械 <span class="arrow">→</span></a>
+            <a href="case-hardware.html" class="industry-tag">🚿 五金卫浴 <span class="arrow">→</span></a>
+            <a href="case-appliance.html" class="industry-tag">💡 电器 <span class="arrow">→</span></a>
+        </div>
+    </div>
+</section>
+
+<!-- ========== CTA ========== -->
+<section class="cta" id="cta">
+    <div class="container" data-aos="zoom-in">
+        <h2>立即开始，让研发更高效</h2>
+        <p>私有化部署，数据不出企业。30分钟快速上线，零风险体验。</p>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+            <a href="#trial" class="btn btn-primary">预约产品演示</a>
+            <a href="#trial" class="btn btn-outline">获取详细方案</a>
+        </div>
+    </div>
+</section>
+
+<!-- ========== Trial Form ========== -->
+<section class="trial" id="trial">
+    <div class="container">
+        <div class="trial-wrapper">
+            <div class="trial-info" data-aos="fade-right">
+                <h2>申请免费试用</h2>
+                <p>填写以下信息，我们将在1个工作日内与您联系，为您提供专属的产品演示和试用账号。</p>
+                <ul class="trial-perks">
+                    <li><span class="check">✓</span> 私有化部署，数据不出企业</li>
+                    <li><span class="check">✓</span> 30分钟快速上线，零风险体验</li>
+                    <li><span class="check">✓</span> 专属顾问1对1技术支持</li>
+                    <li><span class="check">✓</span> 试用期间全程免费，无需任何费用</li>
+                    <li><span class="check">✓</span> 支持CREO/SolidWorks等主流CAD插件</li>
+                </ul>
+            </div>
+            <div class="trial-form-card" data-aos="fade-left">
+                <h3>提交试用申请</h3>
+                <p class="form-desc">带 <span style="color:#EF4444;">*</span> 为必填项</p>
+                <!--
+                    Formspree 配置说明：
+                    1. 访问 https://formspree.io/ 注册账号（用 wanqichen@163.com）
+                    2. 创建新表单（New Form）
+                    3. 复制表单端点地址，如 https://formspree.io/f/xabcdefg
+                    4. 将下方 action 中的地址替换为你的真实端点
+                -->
+                <form id="trialForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                    <input type="hidden" name="_subject" value="TS-PLM 试用申请 - 来自官网">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="text" name="_gotcha" style="display:none">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>姓名 <span class="required">*</span></label>
+                            <input type="text" name="姓名" placeholder="请输入您的姓名" required>
+                        </div>
+                        <div class="form-group">
+                            <label>手机号 <span class="required">*</span></label>
+                            <input type="tel" name="手机号" placeholder="请输入手机号码" required pattern="^1[3-9]\d{9}$">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>公司名称 <span class="required">*</span></label>
+                        <input type="text" name="公司名称" placeholder="请输入公司全称" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>职位</label>
+                            <select name="职位">
+                                <option value="">请选择职位</option>
+                                <option value="研发经理">研发经理</option>
+                                <option value="工程经理">工程经理</option>
+                                <option value="IT主管">IT主管</option>
+                                <option value="总经理/副总">总经理/副总</option>
+                                <option value="采购经理">采购经理</option>
+                                <option value="生产经理">生产经理</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>所在行业</label>
+                            <select name="所在行业">
+                                <option value="">请选择行业</option>
+                                <option value="汽车">汽车</option>
+                                <option value="电子">电子</option>
+                                <option value="机械">机械</option>
+                                <option value="五金卫浴">五金卫浴</option>
+                                <option value="电器">电器</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>需求描述</label>
+                        <textarea name="需求描述" placeholder="请简要描述您的需求（选填）"></textarea>
+                    </div>
+                    <button type="submit" class="form-submit">提交试用申请</button>
+                    <p class="form-note">提交即表示同意我们的隐私政策，您的信息将被严格保密</p>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Toast -->
+<div class="form-toast" id="formToast"></div>
+
+<!-- ========== Learning ========== -->
+<section class="learning" id="learning">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">学习课堂</h2>
+        <p class="section-subtitle" data-aos="fade-up">快速上手 TS-PLM，从入门到精通，助力每位用户高效使用系统</p>
+        <div class="learning-grid">
+            <div class="learning-card" data-aos="fade-up" data-aos-delay="0">
+                <div class="learning-thumb" style="background:linear-gradient(135deg,#E8EEFF,#C7D7FF);">
+                    📄
+                    <span class="cat-tag" style="background:var(--blue);">入门必读</span>
+                </div>
+                <div class="learning-body">
+                    <h3>TS-PLM 快速入门指南</h3>
+                    <p>10分钟了解系统整体架构，掌握登录、首页导航、基础操作等核心入门技能。</p>
+                    <div class="learning-meta">
+                        <span class="tag">基础操作</span>
+                        <span>⏱ 约10分钟</span>
+                    </div>
+                </div>
+            </div>
+            <div class="learning-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="learning-thumb" style="background:linear-gradient(135deg,#ECFDF5,#A7F3D0);">
+                    📋
+                    <span class="cat-tag" style="background:#10B981;">产品管理</span>
+                </div>
+                <div class="learning-body">
+                    <h3>货品信息与BOM管理实操</h3>
+                    <p>从新建货品、设置物料属性到多级BOM创建，完整演示产品数据管理的核心操作。</p>
+                    <div class="learning-meta">
+                        <span class="tag">BOM管理</span>
+                        <span>⏱ 约20分钟</span>
+                    </div>
+                </div>
+            </div>
+            <div class="learning-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="learning-thumb" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA);">
+                    🔄
+                    <span class="cat-tag" style="background:#F59E0B;">变更管理</span>
+                </div>
+                <div class="learning-body">
+                    <h3>工程变更（EC）全流程操作</h3>
+                    <p>详解变更申请发起、审批流转、变更执行、BOM同步ERP等完整EC闭环操作步骤。</p>
+                    <div class="learning-meta">
+                        <span class="tag">变更管理</span>
+                        <span>⏱ 约25分钟</span>
+                    </div>
+                </div>
+            </div>
+            <div class="learning-card" data-aos="fade-up" data-aos-delay="0">
+                <div class="learning-thumb" style="background:linear-gradient(135deg,#F5F3FF,#DDD6FE);">
+                    📐
+                    <span class="cat-tag" style="background:#8B5CF6;">CAD集成</span>
+                </div>
+                <div class="learning-body">
+                    <h3>SolidWorks / CREO 插件使用</h3>
+                    <p>图文讲解CAD插件安装配置，实现图纸属性自动读取、版本一键归档到PLM系统。</p>
+                    <div class="learning-meta">
+                        <span class="tag">插件操作</span>
+                        <span>⏱ 约15分钟</span>
+                    </div>
+                </div>
+            </div>
+            <div class="learning-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="learning-thumb" style="background:linear-gradient(135deg,#FFF0F3,#FECDD3);">
+                    🔗
+                    <span class="cat-tag" style="background:#EC4899;">ERP对接</span>
+                </div>
+                <div class="learning-body">
+                    <h3>PLM 与天心ERP 对接配置</h3>
+                    <p>系统讲解PLM与天心ERP的接口配置方法，实现物料、BOM、变更数据的双向实时同步。</p>
+                    <div class="learning-meta">
+                        <span class="tag">系统集成</span>
+                        <span>⏱ 约30分钟</span>
+                    </div>
+                </div>
+            </div>
+            <div class="learning-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="learning-thumb" style="background:linear-gradient(135deg,#ECFEFF,#A5F3FC);">
+                    👥
+                    <span class="cat-tag" style="background:#06B6D4;">管理员</span>
+                </div>
+                <div class="learning-body">
+                    <h3>系统管理员配置指南</h3>
+                    <p>涵盖用户管理、部门架构、流程模板设计、权限分配、编码规则配置等管理员必备技能。</p>
+                    <div class="learning-meta">
+                        <span class="tag">系统管理</span>
+                        <span>⏱ 约40分钟</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="learning-more" data-aos="fade-up">
+            <a href="#trial" class="btn btn-outline" style="border-color:var(--blue);color:var(--blue);">查看更多课程内容 →</a>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========== Footer ========== -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 64" width="40" height="28" style="flex-shrink:0;">
+                        <rect x="4" y="4" width="38" height="12" rx="3" fill="url(#gG2)"/>
+                        <rect x="12" y="4" width="14" height="46" rx="3" fill="url(#gG2)"/>
+                        <rect x="30" y="4" width="38" height="12" rx="3" fill="url(#bG2)"/>
+                        <rect x="56" y="4" width="14" height="34" rx="3" fill="url(#bG2)"/>
+                        <rect x="56" y="44" width="14" height="6" rx="2.5" fill="url(#bG2)"/>
+                        <defs>
+                            <linearGradient id="gG2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2DE89F"/><stop offset="100%" stop-color="#10C87A"/></linearGradient>
+                            <linearGradient id="bG2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4B9CF5"/><stop offset="100%" stop-color="#1456F0"/></linearGradient>
+                        </defs>
+                    </svg>
+                    <span style="vertical-align:middle;">Tensure TS-PLM</span>
+                </div>
+                <p>专为中小型制造企业设计的产品生命周期管理系统，让产品研发更高效。</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h4>产品</h4>
+                    <a href="#features">核心功能</a>
+                    <a href="#platform">三端协同</a>
+                    <a href="#industries">行业方案</a>
+                    <a href="#learning">学习课堂</a>
+                </div>
+                <div class="footer-col">
+                    <h4>服务</h4>
+                    <a href="#">实施部署</a>
+                    <a href="#">技术支持</a>
+                    <a href="#">培训服务</a>
+                </div>
+                <div class="footer-col">
+                    <h4>关于</h4>
+                    <a href="#">公司介绍</a>
+                    <a href="#">联系我们</a>
+                    <a href="#">合作伙伴</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 TENSURE. All Rights Reserved. | 隐私政策 | 服务条款
+        </div>
+    </div>
+</footer>
+
+<script>
+    // AOS init
+    AOS.init({ duration: 700, once: true, offset: 60 });
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Mobile menu toggle
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navLinks = document.getElementById('navLinks');
+    mobileToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+    });
+
+    // Close mobile menu on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // Trial form submit via Formspree
+    const trialForm = document.getElementById('trialForm');
+    trialForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const phone = this.elements['手机号'].value.trim();
+        if (!/^1[3-9]\d{9}$/.test(phone)) {
+            showToast('请输入正确的手机号码', 'error');
+            this.elements['手机号'].focus();
+            return;
+        }
+
+        if (!this.elements['姓名'].value.trim() || !this.elements['公司名称'].value.trim()) {
+            showToast('请填写所有必填项', 'error');
+            return;
+        }
+
+        const btn = this.querySelector('.form-submit');
+        btn.textContent = '提交中...';
+        btn.disabled = true;
+        btn.style.opacity = '0.7';
+
+        try {
+            const formData = new FormData(this);
+            const resp = await fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (resp.ok) {
+                showToast('✓ 申请提交成功！我们将尽快与您联系', 'success');
+                this.reset();
+            } else {
+                const data = await resp.json();
+                showToast(data.errors ? data.errors.map(e => e.message).join(', ') : '提交失败，请重试', 'error');
+            }
+        } catch (err) {
+            showToast('网络异常，请稍后重试', 'error');
+        }
+
+        btn.textContent = '提交试用申请';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+    });
+
+    function showToast(msg, type) {
+        const toast = document.getElementById('formToast');
+        toast.textContent = msg;
+        toast.className = 'form-toast ' + type;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 3500);
+    }
+</script>
+
+</body>
+</html>

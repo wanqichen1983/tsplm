@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子行业案例 — TENSURE TS-PLM</title>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --blue: #1456F0; --blue-dark: #0D3FBF; --blue-light: #E8EEFF; --orange: #FF6D2E; --gray-900: #1A1A2E; --gray-700: #374151; --gray-500: #6B7280; --gray-300: #D1D5DB; --gray-100: #F3F4F6; --white: #FFFFFF; --radius: 12px; --shadow: 0 4px 24px rgba(20,86,240,0.08); }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; color: var(--gray-700); line-height: 1.7; overflow-x: hidden; background: var(--white); }
+        a { text-decoration: none; color: inherit; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+        .case-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--gray-300); padding: 12px 0; }
+        .case-nav .container { display: flex; align-items: center; justify-content: space-between; }
+        .case-nav .back { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--gray-500); transition: color 0.3s; }
+        .case-nav .back:hover { color: var(--blue); }
+        .case-nav .logo-text { font-weight: 700; font-size: 16px; color: var(--gray-900); }
+        .case-hero { padding: 120px 0 60px; background: linear-gradient(135deg, #E8EEFF 0%, #F0F7FF 50%, #F8FBFF 100%); }
+        .case-hero .container { display: flex; gap: 40px; align-items: center; }
+        .case-hero-icon { font-size: 80px; flex-shrink: 0; }
+        .case-hero h1 { font-size: 36px; font-weight: 700; color: var(--gray-900); margin-bottom: 12px; }
+        .case-hero .subtitle { font-size: 18px; color: var(--gray-500); margin-bottom: 16px; }
+        .case-hero .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+        .case-hero .tag { padding: 4px 14px; border-radius: 20px; font-size: 13px; background: var(--blue-light); color: var(--blue); font-weight: 500; }
+        .case-section { padding: 60px 0; }
+        .case-section:nth-child(even) { background: var(--gray-100); }
+        .case-section h2 { font-size: 28px; font-weight: 700; color: var(--gray-900); margin-bottom: 32px; display: flex; align-items: center; gap: 12px; }
+        .case-section h2 .icon { font-size: 32px; }
+        .pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .pain-card { background: var(--white); border-radius: var(--radius); padding: 24px; border-left: 4px solid #EF4444; box-shadow: var(--shadow); }
+        .pain-card h4 { font-size: 16px; font-weight: 600; color: var(--gray-900); margin-bottom: 8px; }
+        .pain-card p { font-size: 14px; color: var(--gray-500); }
+        .solution-list { display: flex; flex-direction: column; gap: 20px; }
+        .solution-item { display: flex; gap: 16px; align-items: flex-start; background: var(--white); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+        .solution-item:nth-child(even) { background: var(--gray-100); box-shadow: none; }
+        .solution-num { width: 40px; height: 40px; border-radius: 50%; background: var(--blue); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+        .solution-item h4 { font-size: 16px; font-weight: 600; color: var(--gray-900); margin-bottom: 6px; }
+        .solution-item p { font-size: 14px; color: var(--gray-500); }
+        .result-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .result-card { background: var(--white); border-radius: var(--radius); padding: 28px 20px; text-align: center; box-shadow: var(--shadow); }
+        .result-card .num { font-size: 36px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
+        .result-card .num span { font-size: 16px; color: var(--orange); }
+        .result-card .label { font-size: 14px; color: var(--gray-500); }
+        .quote-card { background: linear-gradient(135deg, var(--blue), var(--blue-dark)); border-radius: var(--radius); padding: 40px; color: var(--white); position: relative; }
+        .quote-card::before { content: '\201C'; position: absolute; top: 10px; left: 24px; font-size: 80px; opacity: 0.3; font-family: Georgia, serif; }
+        .quote-card p { font-size: 16px; line-height: 1.8; margin-bottom: 20px; position: relative; z-index: 1; }
+        .quote-card .author { font-size: 14px; opacity: 0.85; }
+        .quote-card .author strong { display: block; font-size: 16px; margin-bottom: 2px; }
+        .timeline { position: relative; padding-left: 32px; }
+        .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: var(--blue-light); }
+        .timeline-item { position: relative; margin-bottom: 28px; }
+        .timeline-item::before { content: ''; position: absolute; left: -26px; top: 8px; width: 12px; height: 12px; border-radius: 50%; background: var(--blue); border: 3px solid var(--blue-light); }
+        .timeline-item h4 { font-size: 15px; font-weight: 600; color: var(--gray-900); margin-bottom: 4px; }
+        .timeline-item p { font-size: 14px; color: var(--gray-500); }
+        .timeline-item .time { font-size: 12px; color: var(--blue); font-weight: 500; }
+        .case-cta { text-align: center; padding: 60px 0 80px; }
+        .case-cta h2 { font-size: 28px; color: var(--gray-900); margin-bottom: 12px; }
+        .case-cta p { color: var(--gray-500); margin-bottom: 24px; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 32px; border-radius: 8px; font-size: 15px; font-weight: 600; transition: all 0.3s; cursor: pointer; border: none; }
+        .btn-primary { background: var(--blue); color: var(--white); }
+        .btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(20,86,240,0.3); }
+        .other-cases { padding: 40px 0 60px; background: var(--gray-100); }
+        .other-cases h3 { font-size: 20px; color: var(--gray-900); margin-bottom: 20px; text-align: center; }
+        .other-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+        .other-card { background: var(--white); border-radius: var(--radius); padding: 20px; text-align: center; transition: all 0.3s; cursor: pointer; }
+        .other-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+        .other-card.active { border: 2px solid var(--blue); }
+        .other-card .icon { font-size: 32px; margin-bottom: 8px; }
+        .other-card .name { font-size: 14px; font-weight: 600; color: var(--gray-700); }
+        @media (max-width: 768px) {
+            .case-hero .container { flex-direction: column; text-align: center; }
+            .case-hero .tags { justify-content: center; }
+            .case-hero h1 { font-size: 28px; }
+            .pain-grid { grid-template-columns: 1fr; }
+            .result-grid { grid-template-columns: repeat(2, 1fr); }
+            .other-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="case-nav">
+        <div class="container">
+            <a href="index.html" class="back">← 返回首页</a>
+            <span class="logo-text">🔌 电子行业案例</span>
+        </div>
+    </nav>
+
+    <section class="case-hero">
+        <div class="container">
+            <div class="case-hero-icon">🔌</div>
+            <div>
+                <h1>电子制造企业研发管理案例</h1>
+                <p class="subtitle">某消费电子企业 — 年产值3.5亿元，产品涵盖智能家居、小家电控制板、工业控制模块</p>
+                <div class="tags">
+                    <span class="tag">消费电子</span>
+                    <span class="tag">PCBA管理</span>
+                    <span class="tag">替代料方案</span>
+                    <span class="tag">快速迭代</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Background -->
+    <section class="case-section">
+        <div class="container">
+            <h2><span class="icon">🏢</span> 企业背景</h2>
+            <div class="quote-card">
+                <p>该企业是一家专注于消费电子产品研发和制造的ODM厂商，核心产品包括智能音箱控制板、扫地机器人主控板、小家电控制模块等。研发团队80余人，年开发新产品超过200个型号。</p>
+                <p>使用CREO进行结构设计，Altium Designer进行PCB layout，产品迭代速度快、型号多，物料管理复杂度高。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pain Points -->
+    <section class="case-section">
+        <div class="container">
+            <h2><span class="icon">😤</span> 实施前的痛点</h2>
+            <div class="pain-grid">
+                <div class="pain-card" data-aos="fade-up">
+                    <h4>产品型号爆炸式增长</h4>
+                    <p>年开发200+型号，基于通用平台衍生大量变体产品，物料编码重复、BOM结构混乱，相似产品无法快速复用。</p>
+                </div>
+                <div class="pain-card" data-aos="fade-up" data-aos-delay="100">
+                    <h4>PCBA替代料管理失控</h4>
+                    <p>电子元器件缺货频繁，替代料方案分散在工程师的个人笔记中，采购找料只能逐个问研发，效率极低。</p>
+                </div>
+                <div class="pain-card" data-aos="fade-up">
+                    <h4>硬件-软件协同困难</h4>
+                    <p>硬件改版后固件版本不匹配，导致产品功能异常。结构工程师、硬件工程师、软件工程师各自维护文档，版本不同步。</p>
+                </div>
+                <div class="pain-card" data-aos="fade-up" data-aos-delay="100">
+                    <h4>客制化需求响应慢</h4>
+                    <p>客户提出功能修改或外观定制需求后，从评估到出货平均需要45天，缺乏标准化配置管理，每次都从零开始设计。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution -->
+    <section class="case-section">
+        <div class="container">
+            <h2><span class="icon">💡</span> TS-PLM解决方案</h2>
+            <div class="solution-list">
+                <div class="solution-item" data-aos="fade-up">
+                    <div class="solution-num">1</div>
+                    <div>
+                        <h4>模块化产品配置管理</h4>
+                        <p>将产品拆分为标准功能模块（主控模块、WiFi模块、电源模块、外壳系列），通过PLM的超级BOM和选项配置功能，实现基于配置规则自动生成派生产品BOM，大幅提高复用率。</p>
+                    </div>
+                </div>
+                <div class="solution-item" data-aos="fade-up">
+                    <div class="solution-num">2</div>
+                    <div>
+                        <h4>电子物料替代料体系</h4>
+                        <p>在BOM中建立首选料/替代料管理机制，每个物料可关联多个替代料并标注优先级和兼容性说明。当首选料缺货时，采购可直接从系统中查询替代方案。</p>
+                    </div>
+                </div>
+                <div class="solution-item" data-aos="fade-up">
+                    <div class="solution-num">3</div>
+                    <div>
+                        <h4>软硬一体化版本绑定</h4>
+                        <p>建立硬件版本与固件版本的关联规则，结构图纸、PCB文件、BOM、固件程序统一在PLM中管理。硬件变更自动触发固件评估流程，确保版本匹配。</p>
+                    </div>
+                </div>
+                <div class="solution-item" data-aos="fade-up">
+                    <div class="solution-num">4</div>
+                    <div>
+                        <h4>CREO + Altium 双CAD集成</h4>
+                        <p>同时集成CREO结构设计和Altium PCB设计，两套CAD的图纸文件统一归档到PLM，通过物料编码自动关联结构图、原理图和PCB文件。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="case-section">
+        <div class="container">
+            <h2><span class="icon">📋</span> 实施历程</h2>
+            <div class="timeline">
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="time">第1-2周</div>
+                    <h4>需求调研与物料梳理</h4>
+                    <p>梳理现有物料分类体系，统一编码规则，建立电子元器件分类标准（IC、电阻、电容、连接器等）。</p>
+                </div>
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="time">第3-5周</div>
+                    <h4>历史数据整理与导入</h4>
+                    <p>清洗现有物料数据8000+条，整理BOM数据1500+条，导入PLM系统并建立物料关联关系。</p>
+                </div>
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="time">第6-8周</div>
+                    <h4>模块化产品建模</h4>
+                    <p>按产品系列建立超级BOM，定义选项组和配置规则，完成TOP 5产品线的模块化拆分。</p>
+                </div>
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="time">第9-10周</div>
+                    <h4>CAD集成与流程测试</h4>
+                    <p>部署CREO和Altium插件，完成图纸归档、BOM提取、版本关联等关键流程的测试验证。</p>
+                </div>
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="time">第11周+</div>
+                    <h4>分批上线与持续优化</h4>
+                    <p>先在新产品项目上试点，验证稳定后推广到全部研发团队。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results -->
+    <section class="case-section">
+        <div class="container">
+            <h2><span class="icon">📊</span> 实施效果</h2>
+            <div class="result-grid">
+                <div class="result-card" data-aos="fade-up">
+                    <div class="num">45天 → 18天</div>
+                    <div class="label">客制化产品交付周期</div>
+                </div>
+                <div class="result-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="num">60<span>%</span></div>
+                    <div class="label">物料复用率提升</div>
+                </div>
+                <div class="result-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="num">8小时 → 1小时</div>
+                    <div class="label">替代料查询时间</div>
+                </div>
+                <div class="result-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="num">0<span>次</span></div>
+                    <div class="label">软硬版本不匹配问题</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Voice -->
+    <section class="case-section">
+        <div class="container">
+            <div class="quote-card">
+                <p>"以前新项目立项，工程师要花一周时间在旧BOM里翻来找去，现在通过模块化配置，一天就能完成BOM搭建。替代料管理功能更是帮了采购大忙，缺料停线的次数大幅减少。TS-PLM对我们这个行业来说真的太实用了。"</p>
+                <div class="author">
+                    <strong>陈工 · 硬件研发经理</strong>
+                    某消费电子ODM企业
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-cta">
+        <h2>您的企业也在面临类似的挑战吗？</h2>
+        <p>立即预约演示，了解TS-PLM如何助力您的企业数字化转型</p>
+        <a href="index.html#trial" class="btn btn-primary">预约演示</a>
+    </section>
+
+    <section class="other-cases">
+        <div class="container">
+            <h3>更多行业案例</h3>
+            <div class="other-grid">
+                <a href="case-auto.html" class="other-card">
+                    <div class="icon">🚗</div>
+                    <div class="name">汽车零部件</div>
+                </a>
+                <div class="other-card active">
+                    <div class="icon">🔌</div>
+                    <div class="name">电子制造</div>
+                </div>
+                <a href="case-machinery.html" class="other-card">
+                    <div class="icon">⚙️</div>
+                    <div class="name">机械设备</div>
+                </a>
+                <a href="case-hardware.html" class="other-card">
+                    <div class="icon">🚿</div>
+                    <div class="name">五金卫浴</div>
+                </a>
+                <a href="case-appliance.html" class="other-card">
+                    <div class="icon">💡</div>
+                    <div class="name">电器制造</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>AOS.init({ duration: 600, once: true });</script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五金卫浴行业案例 — TENSURE TS-PLM</title>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --blue: #1456F0; --blue-dark: #0D3FBF; --blue-light: #E8EEFF; --orange: #FF6D2E; --gray-900: #1A1A2E; --gray-700: #374151; --gray-500: #6B7280; --gray-300: #D1D5DB; --gray-100: #F3F4F6; --white: #FFFFFF; --radius: 12px; --shadow: 0 4px 24px rgba(20,86,240,0.08); }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; color: var(--gray-700); line-height: 1.7; overflow-x: hidden; background: var(--white); }
+        a { text-decoration: none; color: inherit; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+        .case-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--gray-300); padding: 12px 0; }
+        .case-nav .container { display: flex; align-items: center; justify-content: space-between; }
+        .case-nav .back { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--gray-500); transition: color 0.3s; }
+        .case-nav .back:hover { color: var(--blue); }
+        .case-nav .logo-text { font-weight: 700; font-size: 16px; color: var(--gray-900); }
+        .case-hero { padding: 120px 0 60px; background: linear-gradient(135deg, #E8EEFF 0%, #F0F7FF 50%, #F8FBFF 100%); }
+        .case-hero .container { display: flex; gap: 40px; align-items: center; }
+        .case-hero-icon { font-size: 80px; flex-shrink: 0; }
+        .case-hero h1 { font-size: 36px; font-weight: 700; color: var(--gray-900); margin-bottom: 12px; }
+        .case-hero .subtitle { font-size: 18px; color: var(--gray-500); margin-bottom: 16px; }
+        .case-hero .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+        .case-hero .tag { padding: 4px 14px; border-radius: 20px; font-size: 13px; background: var(--blue-light); color: var(--blue); font-weight: 500; }
+        .case-section { padding: 60px 0; }
+        .case-section:nth-child(even) { background: var(--gray-100); }
+        .case-section h2 { font-size: 28px; font-weight: 700; color: var(--gray-900); margin-bottom: 32px; display: flex; align-items: center; gap: 12px; }
+        .case-section h2 .icon { font-size: 32px; }
+        .pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .pain-card { background: var(--white); border-radius: var(--radius); padding: 24px; border-left: 4px solid #EF4444; box-shadow: var(--shadow); }
+        .pain-card h4 { font-size: 16px; font-weight: 600; color: var(--gray-900); margin-bottom: 8px; }
+        .pain-card p { font-size: 14px; color: var(--gray-500); }
+        .solution-list { display: flex; flex-direction: column; gap: 20px; }
+        .solution-item { display: flex; gap: 16px; align-items: flex-start; background: var(--white); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+        .solution-item:nth-child(even) { background: var(--gray-100); box-shadow: none; }
+        .solution-num { width: 40px; height: 40px; border-radius: 50%; background: var(--blue); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+        .solution-item h4 { font-size: 16px; font-weight: 600; color: var(--gray-900); margin-bottom: 6px; }
+        .solution-item p { font-size: 14px; color: var(--gray-500); }
+        .result-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .result-card { background: var(--white); border-radius: var(--radius); padding: 28px 20px; text-align: center; box-shadow: var(--shadow); }
+        .result-card .num { font-size: 36px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
+        .result-card .num span { font-size: 16px; color: var(--orange); }
+        .result-card .label { font-size: 14px; color: var(--gray-500); }
+        .quote-card { background: linear-gradient(135deg, var(--blue), var(--blue-dark)); border-radius: var(--radius); padding: 40px; color: var(--white); position: relative; }
+        .quote-card::before { content: '\201C'; position: absolute; top: 10px; left: 24px; font-size: 80px; opacity: 0.3; font-family: Georgia, serif; }
+        .quote-card p { font-size: 16px; line-height: 1.8; margin-bottom: 20px; position: relative; z-index: 1; }
+        .quote-card .author { font-size: 14px; opacity: 0.85; }
+        .quote-card .author strong { display: block; font-size: 16px; margin-bottom: 2px; }
+        .timeline { position: relative; padding-left: 32px; }
+        .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: var(--blue-light); }
+        .timeline-item { position: relative; margin-bottom: 28px; }
+        .timeline-item::before { content: ''; position: absolute; left: -26px; top: 8px; width: 12px; height: 12px; border-radius: 50%; background: var(--blue); border: 3px solid var(--blue-light); }
+        .timeline-item h4 { font-size: 15px; font-weight: 600; color: var(--gray-900); margin-bottom: 4px; }
+        .timeline-item p { font-size: 14px; color: var(--gray-500); }
+        .timeline-item .time { font-size: 12px; color: var(--blue); font-weight: 500; }
+        .case-cta { text-align: center; padding: 60px 0 80px; }
+        .case-cta h2 { font-size: 28px; color: var(--gray-900); margin-bottom: 12px; }
+        .case-cta p { color: var(--gray-500); margin-bottom: 24px; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 32px; border-radius: 8px; font-size: 15px; font-weight: 600; transition: all 0.3s; cursor: pointer; border: none; }
+        .btn-primary { background: var(--blue); color: var(--white); }
+        .btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(20,86,240,0.3); }
+        .other-cases { padding: 40px 0 60px; background: var(--gray-100); }
+        .other-cases h3 { font-size: 20px; color: var(--gray-900); margin-bottom: 20px; text-align: center; }
+        .other-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+        .other-card { background: var(--white); border-radius: var(--radius); padding: 20px; text-align: center; transition: all 0.3s; cursor: pointer; }
+        .other-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+        .other-card.active { border: 2px solid var(--blue); }
+        .other-card .icon { font-size: 32px; margin-bottom: 8px; }
+        .other-card .name { font-size: 14px; font-weight: 600; color: var(--gray-700); }
+        @media (max-width: 768px) {
+            .case-hero .container { flex-direction: column; text-align: center; }
+            .case-hero .tags { justify-content: center; }
+            .case-hero h1 { font-size: 28px; }
+            .pain-grid { grid-template-columns: 1fr; }
+            .result-grid { grid-template-columns: repeat(2, 1fr); }
+            .other-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="case-nav">
+        <div class="container">
+            <a href="index.html" class="back">← 返回首页</a>
+            <span class="logo-text">🚿 五金卫浴行业案例</span>
+        </div>
+    </nav>
+
+    <section class="case-hero">
+        <div class="container">
+            <div class="case-hero-icon">🚿</div>
+            <div>
+                <h1>五金卫浴企业研发管理案例</h1>
+                <p class="subtitle">某知名卫浴品牌 — 年产值4.2亿元，产品涵盖水龙头、花洒、浴室柜、马桶等全品类卫浴产品</p>
+                <div class="tags">
+                    <span class="tag">卫浴五金</span>
+                    <span class="tag">外观设计</span>
+                    <span class="tag">系列化管理</span>
+                    <span class="tag">开模管控</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-section">
+        <div class="container">
+            <h2><span class="icon">🏢</span> 企业背景</h2>
+            <div class="quote-card">
+                <p>该企业是广东知名卫浴品牌，拥有自主品牌和OEM/ODM双重业务模式。产品线涵盖龙头五金（面盆龙头、厨房龙头、淋浴花洒系列）、陶瓷卫浴（马桶、浴缸）、浴室家具（浴室柜、镜柜）等全品类。</p>
+                <p>研发设计团队50余人，使用SolidWorks进行产品设计，外观由工业设计团队负责，结构工程师负责模具设计和生产工艺。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-section">
+        <div class="container">
+            <h2><span class="icon">😤</span> 实施前的痛点</h2>
+            <div class="pain-grid">
+                <div class="pain-card" data-aos="fade-up">
+                    <h4>产品系列多，系列间关联复杂</h4>
+                    <p>同一设计风格下衍生出面盆龙头、厨房龙头、花洒等多个产品，共用大量通用零部件（阀芯、手柄、出水嘴）。系列间零部件借用关系手工维护，BOM错误频繁。</p>
+                </div>
+                <div class="pain-card" data-aos="fade-up" data-aos-delay="100">
+                    <h4>开模费用高昂，版本失控</h4>
+                    <p>卫浴产品大量依赖开模（铜铸件、锌合金件、塑料件），每次开模费用数万元。模具版本管理混乱，导致模具库里有大量闲置模具，重复开模损失严重。</p>
+                </div>
+                <div class="pain-card" data-aos="fade-up">
+                    <h4>外观设计-结构设计脱节</h4>
+                    <p>工业设计团队使用3D Max做效果图，结构工程师用SolidWorks做工程图，两套文件各自管理，设计评审时经常出现外观与结构不匹配的问题。</p>
+                </div>
+                <div class="pain-card" data-aos="fade-up" data-aos-delay="100">
+                    <h4>表面处理工艺文档缺失</h4>
+                    <p>镀铬、拉丝、喷漆、PVD等表面处理工艺参数分散在工艺员的个人电脑中，不同批次产品色差问题频发，客户投诉率较高。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-section">
+        <div class="container">
+            <h2><span class="icon">💡</span> TS-PLM解决方案</h2>
+            <div class="solution-list">
+                <div class="solution-item" data-aos="fade-up">
+                    <div class="solution-num">1</div>
+                    <div>
+                        <h4>系列产品族 + 零件通用化管理</h4>
+                        <p>按产品族组织管理（如"现代简约系列""北欧系列"），建立系列级共享零件库。当一个系列中的通用零件发生变更，系统自动通知所有使用该零件的产品线进行影响评估。</p>
+                    </div>
+                </div>
+                <div class="solution-item" data-aos="fade-up">
+                    <div class="solution-num">2</div>
+                    <div>
+                        <h4>模具全生命周期管理</h4>
+                        <p>建立模具台账，将模具与对应产品的零件关联。每次修改模具通过EC变更流程管理，记录修模次数、修模原因、模具状态（在用/闲置/报废）。在产品设计时自动提示是否有可复用的现有模具。</p>
+                    </div>
+                </div>
+                <div class="solution-item" data-aos="fade-up">
+                    <div class="solution-num">3</div>
+                    <div>
+                        <h4>外观-结构一体化评审</h4>
+                        <p>在PLM中将工业设计效果图与结构设计图纸关联到同一产品节点，设计评审时自动汇集两类文件。建立外观-结构对照检查流程，确保两者的一致性。</p>
+                    </div>
+                </div>
+                <div class="solution-item" data-aos="fade-up">
+                    <div class="solution-num">4</div>
+                    <div>
+                        <h4>工艺文档标准化管理</h4>
+                        <p>建立表面处理工艺知识库，将镀铬、拉丝、喷砂、PVD等工艺参数按产品系列和材料分类归档。生产部门可直接查阅最新工艺标准，减少色差和表面缺陷。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-section">
+        <div class="container">
+            <h2><span class="icon">📋</span> 实施历程</h2>
+            <div class="timeline">
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="time">第1-2周</div>
+                    <h4>需求调研与产品族梳理</h4>
+                    <p>梳理现有产品系列、通用零件清单、模具台账，制定分类编码方案。</p>
+                </div>
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="time">第3-5周</div>
+                    <h4>数据整理与系统搭建</h4>
+                    <p>导入物料数据5000+条、BOM数据800+条、模具台账200+条，建立产品族结构。</p>
+                </div>
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="time">第6-7周</div>
+                    <h4>SolidWorks集成与流程配置</h4>
+                    <p>部署SolidWorks插件，配置模具管理流程、设计评审流程、变更管理流程。</p>
+                </div>
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="time">第8周</div>
+                    <h4>培训与试运行</h4>
+                    <p>研发、工艺、品质部门分批培训，选择新系列开发项目进行试运行。</p>
+                </div>
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="time">第9周+</div>
+                    <h4>正式上线运行</h4>
+                    <p>全系列产品开发管理统一在PLM中运行，持续优化流程和模具复用机制。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-section">
+        <div class="container">
+            <h2><span class="icon">📊</span> 实施效果</h2>
+            <div class="result-grid">
+                <div class="result-card" data-aos="fade-up">
+                    <div class="num">35<span>%</span></div>
+                    <div class="label">模具复用率提升</div>
+                </div>
+                <div class="result-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="num">80万+/年</div>
+                    <div class="label">减少重复开模费用</div>
+                </div>
+                <div class="result-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="num">0<span>次</span></div>
+                    <div class="label">外观结构不匹配问题</div>
+                </div>
+                <div class="result-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="num">70<span>%</span>↓</div>
+                    <div class="label">表面色差客诉率</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-section">
+        <div class="container">
+            <div class="quote-card">
+                <p>"卫浴行业最大的成本就是开模费，以前经常是做了新系列才发现某个零件和旧系列其实可以共用一套模具，白白浪费了几万块。现在TS-PLM会自动推荐可用的模具和通用零件，一年省下来的开模费就够付软件费了。"</p>
+                <div class="author">
+                    <strong>李总 · 研发副总</strong>
+                    某知名卫浴品牌企业
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-cta">
+        <h2>您的企业也在面临类似的挑战吗？</h2>
+        <p>立即预约演示，了解TS-PLM如何助力您的企业数字化转型</p>
+        <a href="index.html#trial" class="btn btn-primary">预约演示</a>
+    </section>
+
+    <section class="other-cases">
+        <div class="container">
+            <h3>更多行业案例</h3>
+            <div class="other-grid">
+                <a href="case-auto.html" class="other-card">
+                    <div class="icon">🚗</div>
+                    <div class="name">汽车零部件</div>
+                </a>
+                <a href="case-electronics.html" class="other-card">
+                    <div class="icon">🔌</div>
+                    <div class="name">电子制造</div>
+                </a>
+                <a href="case-machinery.html" class="other-card">
+                    <div class="icon">⚙️</div>
+                    <div class="name">机械设备</div>
+                </a>
+                <div class="other-card active">
+                    <div class="icon">🚿</div>
+                    <div class="name">五金卫浴</div>
+                </a>
+                <a href="case-appliance.html" class="other-card">
+                    <div class="icon">💡</div>
+                    <div class="name">电器制造</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>AOS.init({ duration: 600, once: true });</script>
+</body>
+</html>
